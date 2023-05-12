@@ -1,0 +1,22 @@
+version: '2.1'
+
+services:
+  frontend:
+    build: cloud_website/.
+    ports: 
+      - "4444:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    links: 
+        - api
+
+  api:
+    build: api/.
+    ports: 
+      - "5000:5000"
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:5000/persons"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
